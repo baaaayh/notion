@@ -1,0 +1,1 @@
+ALTER TABLE "pages" ADD COLUMN "order_index" double precision NOT NULL;

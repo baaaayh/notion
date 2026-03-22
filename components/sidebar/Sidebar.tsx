@@ -1,0 +1,69 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+import { getSidebarPages } from "@/services/pageService";
+import Link from "next/link";
+import SidebarList from "@/components/sidebar/SidebarList";
+import SearchIcon from "@/components/icons/sidebar/SearchIcon";
+import HomeIcon from "@/components/icons/sidebar/HomeIcon";
+import { createNewPage } from "@/services/pageActions";
+
+const STATIC_NAV_ITME = [
+  { icon: <SearchIcon />, label: "검색", href: "/search" },
+  { icon: <HomeIcon />, label: "홈", href: "/" },
+];
+
+export default async function Sidebar() {
+  const session = await getServerSession(authOptions);
+  if (!session) return null;
+
+  const {
+    user: { name, id },
+  } = session;
+
+  const initialPages = await getSidebarPages(id);
+  const createPageAction = createNewPage.bind(null, id);
+
+  return (
+    <div className="side-bar h-full">
+      <div className="side-bar__wrapper h-full bg-[#f9f8f7]">
+        <div className="side-bar__head px-2 py-1.5">
+          <div className="side-bar__user px-2 py-1 text-sm font-semibold">
+            {name}의 Notion
+          </div>
+        </div>
+        <div className="side-bar__body">
+          <div className="menu">
+            <div className="menu__top p-2">
+              <ul>
+                {STATIC_NAV_ITME.map((item) => (
+                  <li key={item.label}>
+                    <div className="menu-item__warpper">
+                      <Link
+                        href={item.href}
+                        className="flex gap-x-2 p-2 rounded-md hover:bg-[#00000008] active:bg-[#00000015]"
+                      >
+                        <span className="inline-flex justify-center items-center w-5 h-5">
+                          {item.icon}
+                        </span>
+                        <span className="inline-flex items-center text-sm text-[#5f5259]">
+                          {item.label}
+                        </span>
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="menu__bottom p-2">
+              <SidebarList
+                userId={id}
+                initialPages={initialPages}
+                createPageAction={createPageAction}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffefc;
+  --foreground: #171717;
+  --black: #070707;
+  --dark-grey: #7d7a75;
+  --grey: #a19e99;
+  --button-default:
+    linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%),
+    rgb(35, 131, 226);
+  --button-default-hover: rgba(0, 119, 212);
+}
+/*  */
+@theme inline {
+  /* background color */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* text color */
+  --color-black: var(--black);
+  --color-dark-grey: var(--dark-grey);
+  --color-grey: var(--grey);
+
+  /* font */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* shadow */
+  --shadow-input:
+    0px 2px 4px 0px rgba(0, 0, 0, 0.039), 0px 0px 0px 1px #2a1c0012;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@layer utilities {
+  .bg-button-default {
+    background: var(--button-default);
+  }
+  .bg-button-default:hover {
+    background: var(--button-default-hover);
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.page-layout {
+  display: grid;
+  --content-width: minmax(auto, 720px);
+  --margin-width: minmax(96px, 1fr);
+
+  grid-template-columns:
+    [full-start]
+    var(--margin-width)
+    [content-start]
+    var(--content-width)
+    [content-end]
+    var(--margin-width)
+    [full-end];
+}
+
+.page-layout__top {
+  grid-column: content-start / content-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
