@@ -19,13 +19,13 @@ export async function signUp(params: {
 
 export type UpdatePageParams = Partial<{
   title: string;
-  icon: string;
+  icon: string | null;
   cover_img: string;
   isPublished: boolean;
 }>;
 
 export async function updatePage(id: string, params: UpdatePageParams) {
-  const response = await fetch("/api/pages", {
+  const response = await fetch(`/api/page/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id, ...params }),

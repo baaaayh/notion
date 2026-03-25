@@ -24,8 +24,6 @@ export default function VerticalLine() {
     if (newWidth < min) newWidth = min;
     if (newWidth > max) newWidth = max;
 
-    console.log(newWidth);
-
     setWidth(newWidth);
   }, [setWidth]);
 

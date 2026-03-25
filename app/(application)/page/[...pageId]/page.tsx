@@ -11,7 +11,6 @@ export default async function Page({
 
   if (!pageData) notFound();
 
-  console.log("PAGE DATA ::: ", pageData);
   return (
     <>
       <div>page</div>

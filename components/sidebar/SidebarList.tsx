@@ -20,6 +20,7 @@ export default function SidebarList({
       if (!res.ok) throw new Error("Network response was not ok");
       return res.json();
     },
+    enabled: !!userId,
     initialData: initialPages,
     staleTime: 0,
   });

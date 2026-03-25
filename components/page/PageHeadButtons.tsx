@@ -1,3 +1,4 @@
+"use client";
 import PageHeadButton from "@/components/page/PageHeadButton";
 import EmojiIcon from "@/components/icons/page/EmojiIcon";
 import CoverIcon from "@/components/icons/page/CoverIcon";
@@ -21,16 +22,32 @@ const BUTTONS = [
   },
 ];
 
-export default function PageHeadButtons() {
+interface PageHeadButtonsProps {
+  referenceProps?: React.HTMLAttributes<HTMLElement>;
+  isModalOpen: boolean;
+  iconData: string | null;
+}
+
+export default function PageHeadButtons({
+  referenceProps,
+  iconData,
+}: PageHeadButtonsProps) {
   return (
-    <div className="head-buttons w-full pt-20 pb-2 group/list">
+    <div className="head-buttons w-full pt-2 group/list">
       <ul className="inline-flex items-cetner gap-x-2 opacity-0 group-hover/list:opacity-100">
         {BUTTONS.map((button) => (
           <li
             key={button.id}
             className="inline-flex justify-center items-center"
           >
-            <PageHeadButton button={button} />
+            <PageHeadButton
+              buttonProps={
+                button.id === "emojiIcon" ? referenceProps : undefined
+              }
+              button={button}
+              iconData={iconData}
+              buttonId={button.id}
+            />
           </li>
         ))}
       </ul>

@@ -40,7 +40,7 @@ export default function PageHead({
   }, [pageTitle, mutate]);
 
   return (
-    <div className="page-head">
+    <div className="page-head w-full">
       <h3
         className="p-1 font-bold text-4xl col-[content-start/content-end] outline-none cursor-text"
         contentEditable

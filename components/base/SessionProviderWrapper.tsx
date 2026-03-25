@@ -11,6 +11,6 @@ type SessionProviderWrapperProps = PropsWithChildren<{
 export default function SessionProviderWrapper(
   props: SessionProviderWrapperProps,
 ) {
-  const { session, children } = props;
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  const { children } = props;
+  return <SessionProvider>{children}</SessionProvider>;
 }

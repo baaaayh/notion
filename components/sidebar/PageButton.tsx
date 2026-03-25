@@ -7,6 +7,8 @@ import PlusIcon from "@/components/icons/sidebar/PlusIcon";
 import IconButton from "@/components/sidebar/IconButton";
 import { PageType } from "@/database/schema";
 
+const DEFAULT_ICON = "📄";
+
 export default function PageButton({ page }: { page: PageType }) {
   const { id, icon, title } = page;
   const [isOpen, setIsOpen] = useState(true);
@@ -33,7 +35,7 @@ export default function PageButton({ page }: { page: PageType }) {
                 isPressed ? "opacity-0" : "group-hover/row:opacity-0"
               }`}
             >
-              {icon}
+              {icon ? icon : DEFAULT_ICON}
             </span>
             <span
               role="button"

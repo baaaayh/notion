@@ -1,11 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { signOut } from "next-auth/react";
 import { MenuProps } from "@/types/menu";
 import MenuButton from "@/components/sidebar/MenuButton";
 import PageButton from "./PageButton";
 
 export default function Menu({ pages, createPageAction }: MenuProps) {
   const [isOpen, setIsOpen] = useState(true);
+
+  const sortedPages = useMemo(() => {
+    return [...pages].sort(
+      (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
+    );
+  }, [pages]);
 
   return (
     <>
@@ -25,13 +32,21 @@ export default function Menu({ pages, createPageAction }: MenuProps) {
         className="menu__body"
       >
         <ul>
-          {pages.map((page) => {
-            return (
-              <li key={page.id}>
-                <PageButton page={page} />
-              </li>
-            );
-          })}
+          {sortedPages.map((page) => (
+            <li key={page.id}>
+              <PageButton page={page} />
+            </li>
+          ))}
+
+          <li key="sign-out">
+            <button
+              type="button"
+              className="cursor-pointer"
+              onClick={() => signOut()}
+            >
+              Log-out
+            </button>
+          </li>
         </ul>
       </div>
     </>

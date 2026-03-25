@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/ui/input/Input";
 import ButtonDefault from "@/components/ui/buttons/ButtonDefault";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 export default function SignInArea() {
   const router = useRouter();
