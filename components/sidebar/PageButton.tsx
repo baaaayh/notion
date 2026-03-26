@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import ArrowIcon from "@/components/icons/sidebar/ArrowIcon";
 import MoreIcon from "@/components/icons/sidebar/MoreIcon";
 import PlusIcon from "@/components/icons/sidebar/PlusIcon";
@@ -10,9 +11,17 @@ import { PageType } from "@/database/schema";
 const DEFAULT_ICON = "📄";
 
 export default function PageButton({ page }: { page: PageType }) {
-  const { id, icon, title } = page;
-  const [isOpen, setIsOpen] = useState(true);
+  const { id, icon: initialIcon, title: initialTitle } = page;
   const [isPressed, setIsPressed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const cachedPages = queryClient.getQueryData<PageType[]>(["pages"]);
+  const cachedPage = cachedPages?.find((p) => p.id === id);
+
+  const icon = cachedPage?.icon ?? initialIcon;
+  const title = cachedPage?.title ?? initialTitle;
 
   return (
     <div
@@ -25,8 +34,8 @@ export default function PageButton({ page }: { page: PageType }) {
       <Link
         href={`/page/${id}`}
         className={`flex justify-between items-center p-2 rounded-md group/row transition-colors
-            ${isPressed ? "bg-[#00000015]" : "hover:bg-[#00000008]"}
-          `}
+          ${isPressed ? "bg-[#00000015]" : "hover:bg-[#00000008]"}
+        `}
       >
         <div className="inline-flex items-center gap-x-2">
           <span className="relative inline-flex justify-center items-center w-6 h-6">
@@ -35,14 +44,12 @@ export default function PageButton({ page }: { page: PageType }) {
                 isPressed ? "opacity-0" : "group-hover/row:opacity-0"
               }`}
             >
-              {icon ? icon : DEFAULT_ICON}
+              {icon ?? DEFAULT_ICON}
             </span>
             <span
               role="button"
               onClick={() => setIsOpen((prev) => !prev)}
-              style={{
-                transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)",
-              }}
+              style={{ transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}
               className="absolute inset-0 flex items-center justify-center transition-all duration-100 opacity-0 group-hover/row:opacity-100"
             >
               <div className="w-3 h-3 flex items-center justify-center">
@@ -51,7 +58,7 @@ export default function PageButton({ page }: { page: PageType }) {
             </span>
           </span>
           <span className="inline-flex items-center gap-x-1.5 text-[#91918E] text-sm font-semibold">
-            {title}
+            {title ?? "제목 없음"}
           </span>
         </div>
 

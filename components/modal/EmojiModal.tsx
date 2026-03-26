@@ -10,11 +10,13 @@ const COL_COUNT = 12;
 export default function EmojiModal({
   modalRef,
   style,
-  setIconData,
+  onEmojiSelect,
+  onRemove,
   ...props
 }: {
   modalRef: (node: HTMLElement | null) => void;
-  setIconData: React.Dispatch<React.SetStateAction<string | null>>;
+  onEmojiSelect: (emoji: string) => void;
+  onRemove: () => void;
   style: React.CSSProperties;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -60,11 +62,7 @@ export default function EmojiModal({
           </ul>
         </div>
         <div>
-          <button
-            type="button"
-            className="cursor-pointer"
-            onClick={() => setIconData(null)}
-          >
+          <button type="button" className="cursor-pointer" onClick={onRemove}>
             제거
           </button>
         </div>
@@ -79,28 +77,32 @@ export default function EmojiModal({
             position: "relative",
           }}
         >
-          {virtualRows.map((row) => (
-            <ul
-              key={row.key}
-              className={`grid grid-cols-${COL_COUNT} gap-1 px-3 w-full`}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                height: `${row.size}px`,
-                transform: `translateY(${row.start}px)`,
-              }}
-            >
-              {rows[row.index].map((emoji) => (
-                <li
-                  key={emoji.id}
-                  className="flex justify-center items-center w-6 h-6"
-                >
-                  <EmojiButton data={emoji} setIconData={setIconData} />
-                </li>
-              ))}
-            </ul>
-          ))}
+          {virtualRows.map((virtualRow) => {
+            const rowItems = rows[virtualRow.index];
+            return (
+              <ul
+                key={virtualRow.key}
+                className="grid grid-cols-12 gap-1 px-3 w-full"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: `${virtualRow.size}px`,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                {rowItems?.map((emoji) => (
+                  <li
+                    key={emoji.id}
+                    className="flex justify-center items-center w-7 h-7"
+                  >
+                    <EmojiButton data={emoji} onSelect={onEmojiSelect} />
+                  </li>
+                ))}
+              </ul>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-// store/useSidebarStore.ts
 import { createStore } from "zustand";
 import { persist } from "zustand/middleware";
 import Cookies from "js-cookie";

@@ -5,14 +5,10 @@ import type { Emoji } from "@/types/emoji";
 
 interface EmojiButtonProps {
   data: Emoji;
-  onClick?: (emoji: string) => void;
-  setIconData: React.Dispatch<React.SetStateAction<string | null>>;
+  onSelect: (emoji: string) => void;
 }
 
-export default memo(function EmojiButton({
-  data,
-  setIconData,
-}: EmojiButtonProps) {
+export default memo(function EmojiButton({ data, onSelect }: EmojiButtonProps) {
   const nativeEmoji = data.skins[0].native;
 
   const twemojiHtml = useMemo(
@@ -28,7 +24,7 @@ export default memo(function EmojiButton({
     <button
       type="button"
       className="cursor-pointer"
-      onClick={() => setIconData(nativeEmoji)}
+      onClick={() => onSelect(nativeEmoji)}
     >
       <span
         className="w-6 h-6 flex items-center justify-center group-hover:scale-110 transition-transform"

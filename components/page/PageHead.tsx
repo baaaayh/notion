@@ -1,57 +1,68 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect, memo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updatePage } from "@/lib/apiManager";
+import { useUpdatePageTitle } from "@/hooks/useUpdatePageTitle";
+import { PageType } from "@/database/schema";
 
-export default function PageHead({
+function PageHead({
   pageId,
-  title,
+  title: initialTitle,
 }: {
   pageId: string;
   title: string;
 }) {
-  const { data: session } = useSession();
+  const { mutate } = useUpdatePageTitle(pageId);
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
   const userId = session?.user?.id;
-
-  const [pageTitle, setPageTitle] = useState(title);
-  const prevPageTitleRef = useRef(title);
-
-  const { mutate } = useMutation({
-    mutationFn: (newTitle: string) => updatePage(pageId, { title: newTitle }),
-    onSuccess: (result) => {
-      if (result.ok) {
-        queryClient.invalidateQueries({ queryKey: ["pages"] });
-        queryClient.invalidateQueries({ queryKey: ["page", pageId, userId] });
-        prevPageTitleRef.current = pageTitle;
-      }
-    },
-  });
+  const isComposing = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const headRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    if (pageTitle === prevPageTitleRef.current) return;
+    if (headRef.current) headRef.current.textContent = initialTitle;
+  }, []); // eslint-disable-line
 
-    const timer = setTimeout(() => {
-      mutate(pageTitle);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [pageTitle, mutate]);
+  const updateCache = (newTitle: string) => {
+    queryClient.setQueryData(["pages"], (old: PageType[]) =>
+      old?.map((p) => (p.id === pageId ? { ...p, title: newTitle } : p)),
+    );
+    queryClient.setQueryData(
+      ["page", pageId, userId],
+      (old: PageType) => old && { ...old, title: newTitle },
+    );
+  };
 
   return (
     <div className="page-head w-full">
       <h3
+        ref={headRef}
         className="p-1 font-bold text-4xl col-[content-start/content-end] outline-none cursor-text"
         contentEditable
         suppressContentEditableWarning
+        onCompositionStart={() => {
+          isComposing.current = true;
+        }}
+        onCompositionEnd={(e) => {
+          isComposing.current = false;
+          const newTitle = e.currentTarget.textContent || "";
+          updateCache(newTitle);
+          if (timerRef.current) clearTimeout(timerRef.current);
+          timerRef.current = setTimeout(() => mutate(newTitle), 500);
+        }}
         onInput={(e) => {
-          setPageTitle(e.currentTarget.textContent || "");
+          console.log(e.currentTarget.textContent);
+          const newTitle = e.currentTarget.textContent || "";
+          updateCache(newTitle);
+          if (isComposing.current) return;
+          if (timerRef.current) clearTimeout(timerRef.current);
+          timerRef.current = setTimeout(() => mutate(newTitle), 500);
         }}
         spellCheck={false}
-      >
-        {title}
-      </h3>
+      />
     </div>
   );
 }
+
+export default memo(PageHead);
