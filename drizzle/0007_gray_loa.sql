@@ -1,0 +1,1 @@
+ALTER TABLE "pages" ADD COLUMN "trashed_at" timestamp;

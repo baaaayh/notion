@@ -39,6 +39,10 @@ export function useUpdateSidebarList() {
               order_index: nextIndex,
               created_at: new Date(),
               updated_at: new Date(),
+              is_trash: false,
+              is_deleted: false,
+              trashed_at: null,
+              deleted_at: null,
             },
           ],
         );

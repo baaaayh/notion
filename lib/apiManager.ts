@@ -23,7 +23,9 @@ export type UpdatePageParams = Partial<{
   cover_img: string | null;
   cover_alt: string | null;
   is_trash: boolean;
+  trashed_at: Date | null;
   is_deleted: boolean;
+  deleted_at: Date | null;
 }>;
 
 export async function updatePage(id: string, params: UpdatePageParams) {
@@ -61,6 +63,18 @@ export async function getCoversData() {
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || "업데이트 실패");
+  }
+
+  return response.json();
+}
+
+export async function getTrashedPages(userId: string | undefined) {
+  console.log("user id ::: ", userId);
+  const response = await fetch(`/api/trash?userId=${userId}`);
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "휴지통 페이지를 불러오지 못했습니다.");
   }
 
   return response.json();

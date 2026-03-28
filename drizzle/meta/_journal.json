@@ -50,6 +50,13 @@
       "when": 1774705624518,
       "tag": "0006_careless_mentallo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1774713788092,
+      "tag": "0007_gray_loa",
+      "breakpoints": true
     }
   ]
 }

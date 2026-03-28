@@ -23,7 +23,7 @@ export default async function Sidebar() {
   const initialPages = await getSidebarPages(id);
 
   return (
-    <div className="side-bar h-full">
+    <div className="side-bar h-full border-r border-[#d3d1cb]">
       <div className="side-bar__wrapper h-full bg-[#f9f8f7]">
         <div className="side-bar__head px-2 py-1.5">
           <SidebarProfile name={name} />

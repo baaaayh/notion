@@ -4,7 +4,18 @@ import { updatePage } from "@/lib/apiManager";
 import { PageType } from "@/database/schema";
 
 type UpdatePayload = Partial<
-  Pick<PageType, "title" | "icon" | "is_trash" | "cover_img" | "cover_alt">
+  Pick<
+    PageType,
+    | "title"
+    | "icon"
+    | "is_trash"
+    | "cover_img"
+    | "cover_alt"
+    | "is_trash"
+    | "is_deleted"
+    | "trashed_at"
+    | "deleted_at"
+  >
 >;
 
 export function useUpdatePage(pageId: string) {

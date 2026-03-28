@@ -31,6 +31,7 @@ export const pageTable = pgTable("pages", {
   order_index: doublePrecision("order_index").notNull(),
   is_trash: boolean("is_trash").default(false).notNull(),
   is_deleted: boolean("is_deleted").default(false).notNull(),
+  trashed_at: timestamp("trashed_at"),
   deleted_at: timestamp("deleted_at"),
 });
 

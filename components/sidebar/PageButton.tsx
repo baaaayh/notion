@@ -70,7 +70,7 @@ export default function PageButton({ page }: { page: PageType }) {
   const { mutate: updatePage } = useUpdatePage(pageId);
 
   const onRemove = () => {
-    updatePage({ is_trash: true });
+    updatePage({ is_trash: true, trashed_at: new Date() });
   };
 
   const onRename = () => {};
@@ -101,7 +101,7 @@ export default function PageButton({ page }: { page: PageType }) {
           ${isPressed ? "bg-[#00000015]" : "hover:bg-[#00000008]"}
         `}
         >
-          <div className="inline-flex items-center gap-x-2">
+          <div className="inline-flex items-center gap-x-1.5">
             <span className="relative inline-flex justify-center items-center w-6 h-6">
               <span
                 className={`inline-flex transition-opacity duration-100 ${isPressed ? "opacity-0" : "group-hover/row:opacity-0"}`}
@@ -144,7 +144,6 @@ export default function PageButton({ page }: { page: PageType }) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("플러스 클릭");
               }}
             >
               <PlusIcon />

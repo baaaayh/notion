@@ -14,7 +14,7 @@ export async function getSidebarPages(userId: string): Promise<PageType[]> {
         eq(pageTable.is_deleted, false),
       ),
     )
-    .orderBy(desc(pageTable.deleted_at));
+    .orderBy(desc(pageTable.order_index));
 }
 
 // 단일 페이지 데이터 조회
@@ -29,4 +29,19 @@ export async function getPageData(
     .limit(1);
 
   return result[0];
+}
+
+// 휴지통 모달 데이터 조회
+export async function getTrashedPagesData(userId: string) {
+  return await db
+    .select()
+    .from(pageTable)
+    .where(
+      and(
+        eq(pageTable.owner_id, userId),
+        eq(pageTable.is_trash, true),
+        eq(pageTable.is_deleted, false),
+      ),
+    )
+    .orderBy(desc(pageTable.trashed_at));
 }

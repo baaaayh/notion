@@ -51,7 +51,7 @@ const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(
         ref={ref}
         style={style}
         {...props}
-        className="z-50 min-w-55 bg-white shadow-[0px_8px_24px_rgba(149,157,165,0.2)] border rounded-lg p-1.5 antialiased border-[rgb(44,44,43,0.3)] overflow-hidden "
+        className="z-1 min-w-55 bg-white shadow-[0px_8px_24px_rgba(149,157,165,0.2)] border rounded-lg p-1.5 antialiased border-[rgb(44,44,43,0.3)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="context-menu__wrapper">
