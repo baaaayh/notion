@@ -5,29 +5,50 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1773740838084,
-      "tag": "0000_huge_onslaught",
+      "when": 1774590984897,
+      "tag": "0000_fat_lethal_legion",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1773998925474,
-      "tag": "0001_green_madrox",
+      "when": 1774590991671,
+      "tag": "0001_giant_warpath",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1774106022495,
-      "tag": "0002_jazzy_senator_kelly",
+      "when": 1774591101557,
+      "tag": "0002_kind_sharon_ventura",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1774106115483,
-      "tag": "0003_shocking_cerise",
+      "when": 1774591181336,
+      "tag": "0003_closed_zemo",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1774603694976,
+      "tag": "0004_futuristic_iceman",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774705532154,
+      "tag": "0005_tiny_madame_masque",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1774705624518,
+      "tag": "0006_careless_mentallo",
       "breakpoints": true
     }
   ]

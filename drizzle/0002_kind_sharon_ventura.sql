@@ -1,0 +1,1 @@
+ALTER TABLE "cover_img" ADD COLUMN "display_order" double precision NOT NULL;

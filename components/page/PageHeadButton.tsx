@@ -4,26 +4,31 @@ interface ButtonProps {
     icon: React.ReactNode;
     text: string;
   };
-  buttonRef?: (node: HTMLElement | null) => void;
   buttonProps?: React.HTMLAttributes<HTMLElement>;
+  innerRef?: (node: HTMLElement | null) => void;
   iconData: string | null;
+  coverData: string | null;
   buttonId: string;
 }
 export default function PageHeadButton({
   button,
-  buttonRef,
   buttonProps,
+  innerRef,
   iconData,
+  coverData,
   buttonId,
 }: ButtonProps) {
-  if (buttonId === "emojiIcon" && !!iconData) {
+  if (
+    (buttonId === "emojiIcon" && !!iconData) ||
+    (buttonId === "coverIcon" && !!coverData)
+  ) {
     return null;
   }
 
   return (
     <button
       type="button"
-      ref={buttonRef}
+      ref={innerRef}
       {...buttonProps}
       className="inline-flex cursor-pointer group/item"
     >

@@ -31,7 +31,8 @@ export async function GET(
 export async function PATCH(req: Request) {
   try {
     const body = await req.json();
-    const { id, title, icon, cover_img } = body;
+    const { id, title, icon, cover_img, cover_alt, is_trash, is_deleted } =
+      body;
 
     if (!id) {
       return NextResponse.json(
@@ -45,6 +46,9 @@ export async function PATCH(req: Request) {
     if (title !== undefined) updateValues.title = title;
     if (icon !== undefined) updateValues.icon = icon;
     if (cover_img !== undefined) updateValues.cover_img = cover_img;
+    if (cover_alt !== undefined) updateValues.cover_alt = cover_alt;
+    if (is_trash !== undefined) updateValues.is_trash = is_trash;
+    if (is_deleted !== undefined) updateValues.is_deleted = is_deleted;
 
     if (Object.keys(updateValues).length === 0) {
       return NextResponse.json(

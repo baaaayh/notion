@@ -1,17 +1,15 @@
 "use client";
 import Menu from "@/components/sidebar/Menu";
 import { useQuery } from "@tanstack/react-query";
+import { useUpdateSidebarList } from "@/hooks/useUpdateSidebarList";
 import { PageType } from "@/database/schema";
-import { CreatePageResponse } from "@/types/menu";
 
 export default function SidebarList({
   userId,
   initialPages,
-  createPageAction,
 }: {
   userId: string;
   initialPages: PageType[];
-  createPageAction: () => Promise<CreatePageResponse>;
 }) {
   const { data: pages } = useQuery({
     queryKey: ["pages"],
@@ -25,5 +23,7 @@ export default function SidebarList({
     staleTime: 0,
   });
 
-  return <Menu pages={pages || []} createPageAction={createPageAction} />;
+  const { mutate: handleCreatePage } = useUpdateSidebarList();
+
+  return <Menu pages={pages || []} createPageAction={handleCreatePage} />;
 }

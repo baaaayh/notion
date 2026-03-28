@@ -1,0 +1,1 @@
+ALTER TABLE "cover_img" ALTER COLUMN "display_order" SET DEFAULT 0;

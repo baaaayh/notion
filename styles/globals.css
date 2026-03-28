@@ -57,20 +57,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
 .page-layout {
   display: grid;
   --content-width: minmax(auto, 720px);
   --margin-width: minmax(96px, 1fr);
 
   grid-template-columns:
-    [full-start]
-    var(--margin-width)
-    [content-start]
-    var(--content-width)
-    [content-end]
-    var(--margin-width)
+    [full-start] var(--margin-width)
+    [content-start] var(--content-width)
+    [content-end] var(--margin-width)
     [full-end];
+
+  grid-auto-rows: min-content;
 }
 
 .page-layout__top {

@@ -37,16 +37,6 @@ export default function Menu({ pages, createPageAction }: MenuProps) {
               <PageButton page={page} />
             </li>
           ))}
-
-          <li key="sign-out">
-            <button
-              type="button"
-              className="cursor-pointer"
-              onClick={() => signOut()}
-            >
-              Log-out
-            </button>
-          </li>
         </ul>
       </div>
     </>

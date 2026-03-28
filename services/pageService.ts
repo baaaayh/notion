@@ -1,5 +1,5 @@
 import { db } from "@/database/db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { pageTable, PageType } from "@/database/schema";
 
 // 페이지 전체 데이터 조회
@@ -7,7 +7,14 @@ export async function getSidebarPages(userId: string): Promise<PageType[]> {
   return await db
     .select()
     .from(pageTable)
-    .where(eq(pageTable.owner_id, userId));
+    .where(
+      and(
+        eq(pageTable.owner_id, userId),
+        eq(pageTable.is_trash, false),
+        eq(pageTable.is_deleted, false),
+      ),
+    )
+    .orderBy(desc(pageTable.deleted_at));
 }
 
 // 단일 페이지 데이터 조회

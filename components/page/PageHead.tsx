@@ -2,7 +2,7 @@
 import { useRef, useEffect, memo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useUpdatePageTitle } from "@/hooks/useUpdatePageTitle";
+import { useUpdatePage } from "@/hooks/useUpdatePage";
 import { PageType } from "@/database/schema";
 
 function PageHead({
@@ -12,7 +12,7 @@ function PageHead({
   pageId: string;
   title: string;
 }) {
-  const { mutate } = useUpdatePageTitle(pageId);
+  const { mutate } = useUpdatePage(pageId);
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const userId = session?.user?.id;
@@ -49,7 +49,7 @@ function PageHead({
           const newTitle = e.currentTarget.textContent || "";
           updateCache(newTitle);
           if (timerRef.current) clearTimeout(timerRef.current);
-          timerRef.current = setTimeout(() => mutate(newTitle), 500);
+          timerRef.current = setTimeout(() => mutate({ title: newTitle }), 500);
         }}
         onInput={(e) => {
           console.log(e.currentTarget.textContent);
@@ -57,7 +57,7 @@ function PageHead({
           updateCache(newTitle);
           if (isComposing.current) return;
           if (timerRef.current) clearTimeout(timerRef.current);
-          timerRef.current = setTimeout(() => mutate(newTitle), 500);
+          timerRef.current = setTimeout(() => mutate({ title: newTitle }), 500);
         }}
         spellCheck={false}
       />

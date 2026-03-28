@@ -8,13 +8,13 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 const COL_COUNT = 12;
 
 export default function EmojiModal({
-  modalRef,
+  emojiModalRef,
   style,
   onEmojiSelect,
   onRemove,
   ...props
 }: {
-  modalRef: (node: HTMLElement | null) => void;
+  emojiModalRef: (node: HTMLElement | null) => void;
   onEmojiSelect: (emoji: string) => void;
   onRemove: () => void;
   style: React.CSSProperties;
@@ -46,63 +46,65 @@ export default function EmojiModal({
 
   return (
     <div
-      ref={modalRef}
+      ref={emojiModalRef}
       style={style}
-      className="emoji-modal inline-flex flex-col rounded-md border bg-white border-[rgb(44,44,43,0.3)] shadow-[0_4px_12px_0_rgba(25,25,25,0.05)] overflow-hidden"
+      className="emoji-modal inline-flex flex-col rounded-md border bg-white border-[rgb(44,44,43,0.3)] shadow-[0_4px_12px_0_rgba(25,25,25,0.05)] overflow-hidden z-1"
       {...props}
     >
-      <div className="emoji-model__head flex justify-between p-2">
-        <div>
-          <ul>
-            <li>
-              <button type="button" className="cursor-pointer">
-                이모지
-              </button>
-            </li>
-          </ul>
+      <div className="emoji-modal__wrapper">
+        <div className="emoji-model__head flex justify-between p-2">
+          <div>
+            <ul>
+              <li>
+                <button type="button" className="cursor-pointer">
+                  이모지
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <button type="button" className="cursor-pointer" onClick={onRemove}>
+              제거
+            </button>
+          </div>
         </div>
-        <div>
-          <button type="button" className="cursor-pointer" onClick={onRemove}>
-            제거
-          </button>
-        </div>
-      </div>
-      <div
-        ref={parentRef}
-        className="emoji-modal__list w-100 h-60 py-3 overflow-auto"
-      >
         <div
-          style={{
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            position: "relative",
-          }}
+          ref={parentRef}
+          className="emoji-modal__list w-100 h-60 py-3 overflow-auto"
         >
-          {virtualRows.map((virtualRow) => {
-            const rowItems = rows[virtualRow.index];
-            return (
-              <ul
-                key={virtualRow.key}
-                className="grid grid-cols-12 gap-1 px-3 w-full"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                {rowItems?.map((emoji) => (
-                  <li
-                    key={emoji.id}
-                    className="flex justify-center items-center w-7 h-7"
-                  >
-                    <EmojiButton data={emoji} onSelect={onEmojiSelect} />
-                  </li>
-                ))}
-              </ul>
-            );
-          })}
+          <div
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              position: "relative",
+            }}
+          >
+            {virtualRows.map((virtualRow) => {
+              const rowItems = rows[virtualRow.index];
+              return (
+                <ul
+                  key={virtualRow.key}
+                  className="grid grid-cols-12 gap-1 px-3 w-full"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  {rowItems?.map((emoji) => (
+                    <li
+                      key={emoji.id}
+                      className="flex justify-center items-center w-7 h-7"
+                    >
+                      <EmojiButton data={emoji} onSelect={onEmojiSelect} />
+                    </li>
+                  ))}
+                </ul>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

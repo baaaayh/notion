@@ -20,8 +20,10 @@ export async function signUp(params: {
 export type UpdatePageParams = Partial<{
   title: string;
   icon: string | null;
-  cover_img: string;
-  isPublished: boolean;
+  cover_img: string | null;
+  cover_alt: string | null;
+  is_trash: boolean;
+  is_deleted: boolean;
 }>;
 
 export async function updatePage(id: string, params: UpdatePageParams) {
@@ -31,6 +33,31 @@ export async function updatePage(id: string, params: UpdatePageParams) {
     body: JSON.stringify({ id, ...params }),
   });
 
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "업데이트 실패");
+  }
+
+  return response.json();
+}
+
+export async function deletePage(id: string) {
+  const response = await fetch(`/api/page/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.messge || "페이지 삭제 실패");
+  }
+
+  return response.json();
+}
+
+export async function getCoversData() {
+  const response = await fetch("/api/covers");
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || "업데이트 실패");

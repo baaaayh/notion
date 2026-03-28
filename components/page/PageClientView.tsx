@@ -9,16 +9,22 @@ import {
   useDismiss,
   useInteractions,
 } from "@floating-ui/react";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import data from "@emoji-mart/data";
 import { Emoji, EmojiMartData } from "@/types/emoji";
-import { useUpdatePageIcon } from "@/hooks/useUpdatePageIcon";
+import { useCovers } from "@/hooks/useCovers";
+import { useUpdatePage } from "@/hooks/useUpdatePage";
 import Header from "@/components/layout/Header";
 import PageHead from "@/components/page/PageHead";
 import PageHeadButtons from "@/components/page/PageHeadButtons";
-import { PageType } from "@/database/schema";
+import { PageType, CategoryWithCovers } from "@/database/schema";
+
+const CoverModal = dynamic(() => import("@/components/modal/CoverModal"), {
+  ssr: false,
+});
 
 const EmojiModal = dynamic(() => import("@/components/modal/EmojiModal"), {
   ssr: false,
@@ -28,6 +34,24 @@ const getRandomEmoji = (emojiData: EmojiMartData) => {
   const allEmojis = Object.values(emojiData.emojis);
   return (allEmojis[Math.floor(Math.random() * allEmojis.length)] as Emoji)
     .skins[0].native;
+};
+
+const getRandomCover = (categories: CategoryWithCovers[]) => {
+  if (!categories || categories.length === 0) return null;
+
+  const randomCategory =
+    categories[Math.floor(Math.random() * categories.length)];
+
+  if (!randomCategory.covers || randomCategory.covers.length === 0) return null;
+  const randomImage =
+    randomCategory.covers[
+      Math.floor(Math.random() * randomCategory.covers.length)
+    ];
+
+  return {
+    cover_img: randomImage.filename,
+    cover_alt: randomImage.alt_text,
+  };
 };
 
 export default function PageClientView({
@@ -41,7 +65,49 @@ export default function PageClientView({
 }) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
+  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
+
+  const {
+    refs: coverRefs,
+    floatingStyles: coverStyles,
+    context: coverContext,
+  } = useFloating({
+    open: isCoverModalOpen,
+    onOpenChange: setIsCoverModalOpen,
+    whileElementsMounted: autoUpdate,
+    placement: "bottom-end",
+    middleware: [offset(10), flip(), shift()],
+  });
+
+  const {
+    refs: emojiRefs,
+    floatingStyles: emojiStyles,
+    context: emojiContext,
+  } = useFloating({
+    open: isEmojiModalOpen,
+    onOpenChange: setIsEmojiModalOpen,
+    whileElementsMounted: autoUpdate,
+    placement: "bottom",
+    middleware: [offset(8), flip(), shift({ padding: 10 })],
+  });
+
+  const coverDismiss = useDismiss(coverContext, {
+    outsidePress: true,
+    escapeKey: true,
+  });
+  const emojiDismiss = useDismiss(emojiContext, {
+    outsidePress: true,
+    escapeKey: true,
+  });
+  const {
+    getReferenceProps: getCoverRefProps,
+    getFloatingProps: getCoverFloatProps,
+  } = useInteractions([coverDismiss]);
+  const {
+    getReferenceProps: getEmojiRefProps,
+    getFloatingProps: getEmojiFloatProps,
+  } = useInteractions([emojiDismiss]);
 
   const { data: page } = useQuery<PageType>({
     queryKey: ["page", pageId, userId],
@@ -53,76 +119,117 @@ export default function PageClientView({
     initialData: pageData,
     staleTime: 60 * 1000,
   });
+  const { data: coversData } = useCovers();
+  const { mutate: updatePage } = useUpdatePage(pageId);
 
-  const { refs, floatingStyles, context } = useFloating({
-    open: isModalOpen,
-    onOpenChange: setIsModalOpen,
-    whileElementsMounted: autoUpdate,
-    placement: "bottom",
-    middleware: [offset(8), flip(), shift({ padding: 10 })],
-  });
-
-  const dismiss = useDismiss(context, {
-    outsidePress: true,
-    escapeKey: true,
-  });
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
-
-  const { mutate: updateIcon } = useUpdatePageIcon(pageId);
-
-  const handleSelectEmoji = (emoji: string) => {
-    updateIcon(emoji);
-    setIsModalOpen(false);
+  const handleSelectCover = (cover: string) => {
+    setIsCoverModalOpen(false);
   };
 
+  const handleSelectEmoji = (emoji: string) => {
+    updatePage({ icon: emoji });
+    setIsEmojiModalOpen(false);
+  };
+
+  const handleRemoveCover = () => {};
+
   const handleRemoveEmoji = () => {
-    updateIcon(null);
-    setIsModalOpen(false);
+    console.log("here");
+    updatePage({ icon: null });
+    setIsEmojiModalOpen(false);
+  };
+
+  const handleCoverButtonClick = () => {
+    if (!page?.cover_img && coversData) {
+      const randomCover = getRandomCover(coversData as CategoryWithCovers[]);
+      if (randomCover) {
+        updatePage({ ...randomCover });
+      }
+    }
+    setIsCoverModalOpen(true);
   };
 
   const handleEmojiButtonClick = () => {
     if (!page?.icon) {
       const randomEmoji = getRandomEmoji(data as unknown as EmojiMartData);
-      updateIcon(randomEmoji);
+      updatePage({ icon: randomEmoji });
     }
-    setIsModalOpen(true);
+    setIsEmojiModalOpen(true);
   };
 
   return (
     <div className="page-view h-full">
-      {isModalOpen && (
+      {isCoverModalOpen && (
+        <CoverModal
+          coverModalRef={(node: HTMLElement | null) =>
+            coverRefs.setFloating(node)
+          }
+          onCoverSelect={handleSelectCover}
+          onRemove={handleRemoveCover}
+          style={coverStyles}
+          coverData={coversData || []}
+          {...getCoverFloatProps()}
+        />
+      )}
+      {isEmojiModalOpen && (
         <EmojiModal
-          modalRef={(node: HTMLElement | null) => refs.setFloating(node)}
+          emojiModalRef={(node: HTMLElement | null) =>
+            emojiRefs.setFloating(node)
+          }
           onEmojiSelect={handleSelectEmoji}
           onRemove={handleRemoveEmoji}
-          style={floatingStyles}
-          {...getFloatingProps()}
+          style={emojiStyles}
+          {...getEmojiFloatProps()}
         />
       )}
       <Header pageId={pageId} initialTitle={pageData.title} />
-      <div className={`page-layout pb-[30vh]`}>
-        <div className="page-layout__top col-[content-start/content-end]">
-          <div className="w-full pt-20 pb-2">
+      <div className={`relative page-layout pb-[30vh]`}>
+        <div className="col-[full-start/full-end] w-full">
+          {typeof page?.cover_img === "string" && page.cover_img ? (
+            <div className="page-layout__cover h-60 relative">
+              <Image
+                src={`/assets/images/cover/${page.cover_img}`}
+                fill
+                className="object-cover max-h-60"
+                alt={page.cover_alt ?? "Page cover"}
+                loading="eager"
+              />
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
+        <div
+          className={`page-layout__top relative col-[content-start/content-end] ${!!page?.cover_img ? "-mt-10" : ""}`}
+        >
+          <div className={`w-full ${!!page?.cover_img ? "" : "pt-20"} pb-2`}>
             {page?.icon && (
               <button
                 type="button"
-                ref={(node) => refs.setReference(node)}
+                ref={(node) => emojiRefs.setReference(node)}
                 className="inline-flex justify-center items-center cursor-pointer"
-                onClick={() => setIsModalOpen((prev) => !prev)}
+                onClick={() => setIsEmojiModalOpen((prev) => !prev)}
               >
                 <span className="text-7xl">{page.icon}</span>
               </button>
             )}
             <PageHeadButtons
-              referenceProps={getReferenceProps({
+              emojiRef={emojiRefs.setReference}
+              emojiRefProps={getEmojiRefProps({
                 onClick: () => {
-                  setIsModalOpen((prev) => !prev);
+                  setIsEmojiModalOpen((prev) => !prev);
                   handleEmojiButtonClick();
                 },
               })}
-              isModalOpen={isModalOpen}
               iconData={page?.icon ?? null}
+              coverRef={coverRefs.setReference}
+              coverRefProps={getCoverRefProps({
+                onClick: () => {
+                  setIsCoverModalOpen((prev) => !prev);
+                  handleCoverButtonClick();
+                },
+              })}
+              coverData={page?.cover_img ?? null}
             />
           </div>
           <PageHead pageId={pageId} title={pageData.title} />

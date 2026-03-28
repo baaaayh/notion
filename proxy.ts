@@ -11,8 +11,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // sign-in 경로를 제외 목록에 추가합니다.
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sign-in|sign-up).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|sign-in|.*\\.[^/]+$).*)",
   ],
 };

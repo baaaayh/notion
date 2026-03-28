@@ -2,10 +2,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { getSidebarPages } from "@/services/pageService";
 import Link from "next/link";
+import SidebarProfile from "@/components/sidebar/SidebarProfile";
 import SidebarList from "@/components/sidebar/SidebarList";
 import SearchIcon from "@/components/icons/sidebar/SearchIcon";
 import HomeIcon from "@/components/icons/sidebar/HomeIcon";
-import { createNewPage } from "@/services/pageActions";
 
 const STATIC_NAV_ITME = [
   { icon: <SearchIcon />, label: "검색", href: "/search" },
@@ -21,15 +21,12 @@ export default async function Sidebar() {
   } = session;
 
   const initialPages = await getSidebarPages(id);
-  const createPageAction = createNewPage.bind(null, id);
 
   return (
     <div className="side-bar h-full">
       <div className="side-bar__wrapper h-full bg-[#f9f8f7]">
         <div className="side-bar__head px-2 py-1.5">
-          <div className="side-bar__user px-2 py-1 text-sm font-semibold">
-            {name}의 Notion
-          </div>
+          <SidebarProfile name={name} />
         </div>
         <div className="side-bar__body">
           <div className="menu">
@@ -55,11 +52,7 @@ export default async function Sidebar() {
               </ul>
             </div>
             <div className="menu__bottom p-2">
-              <SidebarList
-                userId={id}
-                initialPages={initialPages}
-                createPageAction={createPageAction}
-              />
+              <SidebarList userId={id} initialPages={initialPages} />
             </div>
           </div>
         </div>

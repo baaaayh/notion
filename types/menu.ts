@@ -8,5 +8,5 @@ export type CreatePageResponse = {
 
 export type MenuProps = {
   pages: PageType[];
-  createPageAction: () => Promise<CreatePageResponse>;
+  createPageAction: () => void;
 };

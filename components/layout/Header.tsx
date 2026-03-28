@@ -8,11 +8,9 @@ const DEFAULT_ICON = "📄";
 export default function Header({
   pageId,
   initialTitle,
-  initialIcon,
 }: {
   pageId: string;
   initialTitle: string;
-  initialIcon?: string | null;
 }) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
@@ -27,7 +25,7 @@ export default function Header({
     staleTime: 60 * 1000,
   });
 
-  const icon = page?.icon ?? initialIcon;
+  const icon = page?.icon ?? DEFAULT_ICON;
   const title = page?.title ?? initialTitle;
 
   return (
