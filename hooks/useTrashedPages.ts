@@ -15,19 +15,22 @@ export function useTrashedPages() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (pageId: string) => updatePage(pageId, { is_trash: false }),
-    onSuccess: () => {
+    mutationFn: (pageId: string) =>
+      updatePage(pageId, { is_trash: false, trashed_at: null }),
+    onSuccess: (_data, pageId) => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["pages", "trash", userId] });
+      queryClient.invalidateQueries({ queryKey: ["page", pageId, userId] });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (pageId: string) =>
       updatePage(pageId, { is_deleted: true, deleted_at: new Date() }),
-    onSuccess: () => {
+    onSuccess: (_data, pageId) => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
       queryClient.invalidateQueries({ queryKey: ["pages", "trash", userId] });
+      queryClient.invalidateQueries({ queryKey: ["page", pageId, userId] });
     },
   });
 

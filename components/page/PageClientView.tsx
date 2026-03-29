@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useFloating,
   autoUpdate,
@@ -10,6 +10,7 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +18,7 @@ import data from "@emoji-mart/data";
 import { Emoji, EmojiMartData } from "@/types/emoji";
 import { useCovers } from "@/hooks/useCovers";
 import { useUpdatePage } from "@/hooks/useUpdatePage";
+import TrashedPageHeader from "@/components/page/TrashedPageHeader";
 import Header from "@/components/layout/Header";
 import PageHead from "@/components/page/PageHead";
 import PageHeadButtons from "@/components/page/PageHeadButtons";
@@ -63,8 +65,13 @@ export default function PageClientView({
   pageId: string;
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const { data: coversData } = useCovers();
+  const { mutate: updatePage } = useUpdatePage(pageId);
+
   const { data: session } = useSession();
   const userId = session?.user?.id;
+  const userName = session?.user?.name;
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
 
@@ -119,8 +126,32 @@ export default function PageClientView({
     initialData: pageData,
     staleTime: 60 * 1000,
   });
-  const { data: coversData } = useCovers();
-  const { mutate: updatePage } = useUpdatePage(pageId);
+
+  const { data: pages } = useQuery<PageType[]>({
+    queryKey: ["pages"],
+    queryFn: async () => {
+      const res = await fetch(`/api/pages?userId=${userId}`);
+      if (!res.ok) throw new Error("fetch failed");
+      return res.json();
+    },
+    enabled: !!userId,
+  });
+
+  const firstPage = pages
+    ?.filter((p) => !p.is_trash && !p.is_deleted)
+    .sort((a, b) => a.order_index - b.order_index)[0];
+
+  useEffect(() => {
+    if (page?.is_deleted && firstPage?.id) {
+      router.push(`/page/${firstPage.id}`);
+    } else if (page?.is_deleted && !firstPage) {
+      router.push("/");
+    }
+  }, [page?.is_deleted, firstPage, router]);
+
+  if (page?.is_deleted) {
+    return null;
+  }
 
   const handleSelectCover = (cover: string) => {
     setIsCoverModalOpen(false);
@@ -134,7 +165,6 @@ export default function PageClientView({
   const handleRemoveCover = () => {};
 
   const handleRemoveEmoji = () => {
-    console.log("here");
     updatePage({ icon: null });
     setIsEmojiModalOpen(false);
   };
@@ -183,6 +213,9 @@ export default function PageClientView({
         />
       )}
       <Header pageId={pageId} initialTitle={pageData.title} />
+      {page.is_trash && !page.is_deleted && (
+        <TrashedPageHeader userName={userName} pageId={pageId} />
+      )}
       <div className={`relative page-layout pb-[30vh]`}>
         <div className="col-[full-start/full-end] w-full">
           {typeof page?.cover_img === "string" && page.cover_img ? (

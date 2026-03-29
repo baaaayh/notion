@@ -52,7 +52,6 @@ function PageHead({
           timerRef.current = setTimeout(() => mutate({ title: newTitle }), 500);
         }}
         onInput={(e) => {
-          console.log(e.currentTarget.textContent);
           const newTitle = e.currentTarget.textContent || "";
           updateCache(newTitle);
           if (isComposing.current) return;

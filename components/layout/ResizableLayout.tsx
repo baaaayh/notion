@@ -13,10 +13,10 @@ export default function ResizableLayout({
 
   return (
     <div className="app-container flex h-full">
-      <div className="sidebar-container h-full" style={{ width }}>
+      <div className="sidebar-container relative h-full" style={{ width }}>
         {sidebar}
+        <VerticalLine />
       </div>
-      <VerticalLine />
       <div className="view-container flex-1">{children}</div>
     </div>
   );

@@ -69,7 +69,6 @@ export async function getCoversData() {
 }
 
 export async function getTrashedPages(userId: string | undefined) {
-  console.log("user id ::: ", userId);
   const response = await fetch(`/api/trash?userId=${userId}`);
 
   if (!response.ok) {

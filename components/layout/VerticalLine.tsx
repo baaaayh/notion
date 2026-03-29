@@ -50,7 +50,7 @@ export default function VerticalLine() {
 
   return (
     <span
-      className="vertical w-2 h-full cursor-col-resize"
+      className="absolute top-0 -right-2 vertical w-2 h-full cursor-col-resize z-1"
       onMouseDown={handleMouseDown}
     ></span>
   );

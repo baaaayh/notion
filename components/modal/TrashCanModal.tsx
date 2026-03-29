@@ -1,5 +1,6 @@
 "use client";
 import { useState, forwardRef } from "react";
+import Link from "next/link";
 import { useTrashedPages } from "@/hooks/useTrashedPages";
 import DocIcon from "@/components/icons/modal/DocIcon";
 import RestoreIcon from "@/components/icons/modal/RestoreIcon";
@@ -40,7 +41,8 @@ const TrashCanModal = forwardRef<HTMLDivElement, TrashCanModalProps>(
               <ul className="flex flex-col gap-y-1">
                 {trashedPages.map((page) => (
                   <li key={page.id}>
-                    <div
+                    <Link
+                      href={`/page/${page.id}`}
                       role="button"
                       className="flex w-full justify-between items-center px-1 rounded-md hover:bg-[#f0efed] cursor-pointer"
                     >
@@ -78,7 +80,7 @@ const TrashCanModal = forwardRef<HTMLDivElement, TrashCanModalProps>(
                           <RemoveIcon />
                         </button>
                       </div>
-                    </div>
+                    </Link>
                   </li>
                 ))}
               </ul>

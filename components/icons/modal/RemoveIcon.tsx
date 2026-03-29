@@ -1,4 +1,4 @@
-export default function RemoveIcon() {
+export default function RemoveIcon({ color }: { color?: string }) {
   return (
     <svg
       aria-hidden="true"
@@ -6,8 +6,8 @@ export default function RemoveIcon() {
       viewBox="0 0 16 16"
       className="trashSmall"
       style={{
-        fill: "#8e8b86",
-        color: "#8e8b86",
+        fill: color ? color : "#8e8b86",
+        color: color ? color : "#8e8b86",
       }}
     >
       <path d="M6.688 6.3a.575.575 0 0 0-.575.575v4.5a.575.575 0 1 0 1.15 0v-4.5a.575.575 0 0 0-.575-.575m2.625 0a.575.575 0 0 0-.575.575v4.5a.575.575 0 1 0 1.15 0v-4.5a.575.575 0 0 0-.575-.575"></path>
