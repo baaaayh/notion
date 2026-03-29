@@ -57,6 +57,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
 .page-layout {
   display: grid;
   --content-width: minmax(auto, 720px);
@@ -76,4 +77,44 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+.page-home {
+  display: grid;
+  --content-width: minmax(auto, 900px);
+  --margin-width: minmax(96px, 1fr);
+
+  grid-template-columns:
+    [full-start] var(--margin-width)
+    [content-start] var(--content-width)
+    [content-end] var(--margin-width)
+    [full-end];
+
+  grid-auto-rows: min-content;
+}
+
+.swiper-wrapper {
+  padding: 20px 0;
+}
+
+.page-slider .swiper-button-prev,
+.page-slider .swiper-button-next {
+  top: 50%;
+  transform: translateY(-50%);
+  color: #333;
+  z-index: 10;
+}
+
+.page-slider .swiper-button-prev {
+  left: 10px;
+}
+
+.page-slider .swiper-button-next {
+  right: 10px;
+}
+
+.page-slider .swiper-button-prev::after,
+.page-slider .swiper-button-next::after {
+  font-size: 20px !important;
+  font-weight: bold;
 }

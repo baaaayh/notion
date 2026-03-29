@@ -73,6 +73,7 @@ export default function PageClientView({
   const userId = session?.user?.id;
   const userName = session?.user?.name;
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
+  const [, setIsCoverMenuOpen] = useState(false);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
 
   const {
@@ -154,6 +155,7 @@ export default function PageClientView({
   }
 
   const handleSelectCover = (cover: string) => {
+    updatePage({ cover_img: cover });
     setIsCoverModalOpen(false);
   };
 
@@ -169,14 +171,14 @@ export default function PageClientView({
     setIsEmojiModalOpen(false);
   };
 
-  const handleCoverButtonClick = () => {
+  const handleCoverButtonClick = (showMdoal: boolean) => {
     if (!page?.cover_img && coversData) {
       const randomCover = getRandomCover(coversData as CategoryWithCovers[]);
       if (randomCover) {
         updatePage({ ...randomCover });
       }
     }
-    setIsCoverModalOpen(true);
+    setIsCoverModalOpen(showMdoal);
   };
 
   const handleEmojiButtonClick = () => {
@@ -216,8 +218,38 @@ export default function PageClientView({
       {page.is_trash && !page.is_deleted && (
         <TrashedPageHeader userName={userName} pageId={pageId} />
       )}
+      {}
       <div className={`relative page-layout pb-[30vh]`}>
-        <div className="col-[full-start/full-end] w-full">
+        <div
+          className={`relative col-[full-start/full-end] w-full group`}
+          onMouseEnter={() => setIsCoverMenuOpen(true)}
+          onMouseLeave={() => setIsCoverMenuOpen(false)}
+        >
+          <div
+            className={`cover-menu absolute top-3 right-3 p-1 rounded-md z-1 bg-white opacity-0 group-hover:opacity-100 ${isCoverModalOpen ? "opacity-100" : ""}`}
+            ref={(node) => coverRefs.setReference(node)}
+            {...getCoverRefProps({
+              onClick: (event) => {
+                event.stopPropagation();
+                setIsCoverModalOpen((prev) => !prev);
+                handleCoverButtonClick(true);
+              },
+            })}
+          >
+            <ul>
+              <li>
+                <button
+                  type="button"
+                  className="cursor-pointer hover:bg-[#2a1c0012]"
+                  onClick={() => setIsCoverModalOpen(true)}
+                >
+                  <span className="inline-flex justify-center tiems-center px-1 py-0.5 text-xs text-[#8e8b86]">
+                    변경하기
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </div>
           {typeof page?.cover_img === "string" && page.cover_img ? (
             <div className="page-layout__cover h-60 relative">
               <Image
@@ -254,14 +286,13 @@ export default function PageClientView({
                   handleEmojiButtonClick();
                 },
               })}
-              iconData={page?.icon ?? null}
               coverRef={coverRefs.setReference}
               coverRefProps={getCoverRefProps({
                 onClick: () => {
-                  setIsCoverModalOpen((prev) => !prev);
-                  handleCoverButtonClick();
+                  handleCoverButtonClick(false);
                 },
               })}
+              iconData={page?.icon ?? null}
               coverData={page?.cover_img ?? null}
             />
           </div>

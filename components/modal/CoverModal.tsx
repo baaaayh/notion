@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { CategoryWithCovers } from "@/database/schema";
 
 function CoverModal({
@@ -19,7 +20,8 @@ function CoverModal({
     <div
       ref={coverModalRef}
       style={style}
-      className="cover-modal inline-flex flex-col rounded-md border bg-white border-[rgb(44,44,43,0.3)] shadow-[0_4px_12px_0_rgba(25,25,25,0.05)] overflow-hidden"
+      className="cover-modal inline-flex w-130 flex-col rounded-md border bg-white border-[rgb(44,44,43,0.3)] shadow-[0_4px_12px_0_rgba(25,25,25,0.05)] overflow-hidden z-1"
+      {...props}
     >
       <div className="cover-modal__wrapper">
         <div className="cover-model__head flex justify-between p-2">
@@ -38,11 +40,38 @@ function CoverModal({
             </button>
           </div>
         </div>
-        <div className="cover-moal__body">
+        <div className="cover-moal__body py-2 max-h-110 overflow-auto">
           <ul>
-            <li>
-              <button type="button"></button>
-            </li>
+            {coverData.map((category) => {
+              return (
+                <div key={category.id} className="px-1">
+                  <div className="py-2 text-sm">{category.name}</div>
+                  <div className="px-3">
+                    <ul className="grid grid-cols-4 gap-x-1">
+                      {category.covers.map((cover) => {
+                        return (
+                          <li key={cover.id}>
+                            <button
+                              type="button"
+                              className="relative flex justify-center items-center w-full h-16 rounded-md overflow-hidden cursor-pointer"
+                              onClick={() => onCoverSelect(cover.filename)}
+                            >
+                              <Image
+                                src={`/assets/images/cover/${cover.filename}`}
+                                fill
+                                className="object-cover max-h-60"
+                                alt={cover.alt_text ?? "Page cover"}
+                                loading="eager"
+                              />
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
           </ul>
         </div>
       </div>
