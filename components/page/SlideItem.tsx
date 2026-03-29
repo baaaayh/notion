@@ -36,8 +36,12 @@ export default function SlideItem({
               <span className="inline-flex text-[8px] p-0.5 text-white rounded-md bg-[#689f38] overflow-hidden">
                 {userName}
               </span>
-              <span className="text-[12px] text-[#a19e99]">
-                {page.updated_at.toLocaleString()}
+              <span className="text-[10px] text-[#a19e99]">
+                {new Date(page.updated_at).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </span>
             </div>
           </div>
