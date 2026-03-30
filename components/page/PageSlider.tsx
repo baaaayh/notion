@@ -35,8 +35,6 @@ export default function PageSlider() {
         }}
         spaceBetween={20}
         slidesPerView={5.5}
-        onSlideChange={() => {}}
-        onSwiper={(swiper) => console.log(swiper)}
       >
         {pages?.map((page) => (
           <SwiperSlide key={page.id}>

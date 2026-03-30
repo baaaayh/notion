@@ -1,0 +1,1 @@
+ALTER TABLE "comments" ADD COLUMN "owner_name" text NOT NULL;

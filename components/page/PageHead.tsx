@@ -35,7 +35,7 @@ function PageHead({
   };
 
   return (
-    <div className="page-head w-full">
+    <div className="page-head w-full py-2 mb-6">
       <h3
         ref={headRef}
         className="p-1 font-bold text-4xl col-[content-start/content-end] outline-none cursor-text"

@@ -57,6 +57,27 @@
       "when": 1774713788092,
       "tag": "0007_gray_loa",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1774850259290,
+      "tag": "0008_equal_moon_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1774850413639,
+      "tag": "0009_perpetual_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1774858113855,
+      "tag": "0010_even_molecule_man",
+      "breakpoints": true
     }
   ]
 }

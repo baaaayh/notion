@@ -59,6 +59,7 @@ function CoverModal({
                               <Image
                                 src={`/assets/images/cover/${cover.filename}`}
                                 fill
+                                sizes={"115px"}
                                 className="object-cover max-h-60"
                                 alt={cover.alt_text ?? "Page cover"}
                                 loading="eager"

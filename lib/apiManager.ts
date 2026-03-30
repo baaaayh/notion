@@ -78,3 +78,30 @@ export async function getTrashedPages(userId: string | undefined) {
 
   return response.json();
 }
+
+export async function createComment(
+  userId: string,
+  pageId: string,
+  parentId: string | null,
+  comment: string,
+  userName: string | null | undefined,
+) {
+  const response = await fetch(`/api/comment/${pageId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      owner_id: userId,
+      owner_name: userName,
+      page_id: pageId,
+      parent_id: parentId,
+      text: comment,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.messge || "페이지 삭제 실패");
+  }
+
+  return response.json();
+}

@@ -7,8 +7,10 @@ import {
   jsonb,
   doublePrecision,
   pgEnum,
+  index,
+  AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import { InferSelectModel, InferInsertModel, relations } from "drizzle-orm";
 
 export const userTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -75,6 +77,44 @@ export const blockTable = pgTable("blocks", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const commentTable = pgTable(
+  "comments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    page_id: uuid("page_id")
+      .references(() => pageTable.id, { onDelete: "cascade" })
+      .notNull(),
+    owner_id: uuid("owner_id").notNull(),
+    owner_name: text("owner_name").notNull(),
+    parent_id: uuid("parent_id").references(
+      (): AnyPgColumn => commentTable.id,
+      {
+        onDelete: "cascade",
+      },
+    ),
+    text: text("text").notNull(),
+    created_at: timestamp("created_at").defaultNow().notNull(),
+    updated_at: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      pageIdx: index("page_idx").on(table.page_id),
+      createdIdx: index("created_idx").on(table.created_at),
+    };
+  },
+);
+
+export const pageTableRelations = relations(pageTable, ({ many }) => ({
+  comments: many(commentTable),
+}));
+
+export const commentTableRelations = relations(commentTable, ({ one }) => ({
+  page: one(pageTable, {
+    fields: [commentTable.page_id],
+    references: [pageTable.id],
+  }),
+}));
+
 export type PageType = InferSelectModel<typeof pageTable>;
 export type NewPageType = InferInsertModel<typeof pageTable>;
 
@@ -83,6 +123,12 @@ export type CoverType = InferSelectModel<typeof coverTable>;
 
 export type blockType = InferSelectModel<typeof blockTable>;
 export type NewBlockType = InferInsertModel<typeof blockTable>;
+
+export type CommentType = InferSelectModel<typeof commentTable>;
+
+export type PageWithComments = PageType & {
+  comments: CommentType[];
+};
 
 export interface CategoryWithCovers extends CoverCategoryType {
   covers: CoverType[];

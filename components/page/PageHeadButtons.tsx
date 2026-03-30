@@ -29,6 +29,8 @@ interface PageHeadButtonsProps {
   coverRef?: (node: HTMLElement | null) => void;
   coverRefProps?: React.HTMLAttributes<HTMLElement>;
   coverData: string | null;
+  isCommentInputShow: boolean;
+  setIsCommentInputShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function PageHeadButtons({
@@ -38,6 +40,8 @@ export default function PageHeadButtons({
   coverRef,
   coverRefProps,
   coverData,
+  isCommentInputShow,
+  setIsCommentInputShow,
 }: PageHeadButtonsProps) {
   return (
     <div className="head-buttons w-full pt-2 group/list">
@@ -45,9 +49,11 @@ export default function PageHeadButtons({
         {BUTTONS.map((button) => {
           if (button.id === "emojiIcon" && iconData) return null;
           if (button.id === "coverIcon" && coverData) return null;
+          if (button.id === "commentIcon" && isCommentInputShow) return null;
 
           const isEmoji = button.id === "emojiIcon";
           const isCover = button.id === "coverIcon";
+          const isComment = button.id === "commentIcon";
 
           return (
             <li
@@ -63,6 +69,9 @@ export default function PageHeadButtons({
                 iconData={iconData}
                 coverData={coverData}
                 buttonId={button.id}
+                onClick={
+                  isComment ? () => setIsCommentInputShow(true) : undefined
+                }
               />
             </li>
           );

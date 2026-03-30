@@ -11,7 +11,6 @@ import {
 } from "@floating-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import data from "@emoji-mart/data";
@@ -22,7 +21,12 @@ import TrashedPageHeader from "@/components/page/TrashedPageHeader";
 import Header from "@/components/layout/Header";
 import PageHead from "@/components/page/PageHead";
 import PageHeadButtons from "@/components/page/PageHeadButtons";
-import { PageType, CategoryWithCovers } from "@/database/schema";
+import CommentArea from "@/components/page/CommentArea";
+import {
+  PageType,
+  CategoryWithCovers,
+  PageWithComments,
+} from "@/database/schema";
 
 const CoverModal = dynamic(() => import("@/components/modal/CoverModal"), {
   ssr: false,
@@ -59,22 +63,24 @@ const getRandomCover = (categories: CategoryWithCovers[]) => {
 export default function PageClientView({
   pageData,
   pageId,
+  userId,
+  userName,
   children,
 }: {
   pageData: PageType;
   pageId: string;
+  userId: string;
+  userName: string;
   children: React.ReactNode;
 }) {
   const router = useRouter();
   const { data: coversData } = useCovers();
   const { mutate: updatePage } = useUpdatePage(pageId);
 
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const userName = session?.user?.name;
   const [isEmojiModalOpen, setIsEmojiModalOpen] = useState(false);
   const [, setIsCoverMenuOpen] = useState(false);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
+  const [isCommentInputShow, setIsCommentInputShow] = useState(false);
 
   const {
     refs: coverRefs,
@@ -117,17 +123,6 @@ export default function PageClientView({
     getFloatingProps: getEmojiFloatProps,
   } = useInteractions([emojiDismiss]);
 
-  const { data: page } = useQuery<PageType>({
-    queryKey: ["page", pageId, userId],
-    queryFn: async () => {
-      const res = await fetch(`/api/page/${pageId}?userId=${userId}`);
-      return res.json();
-    },
-    enabled: !!userId,
-    initialData: pageData,
-    staleTime: 60 * 1000,
-  });
-
   const { data: pages } = useQuery<PageType[]>({
     queryKey: ["pages"],
     queryFn: async () => {
@@ -136,6 +131,17 @@ export default function PageClientView({
       return res.json();
     },
     enabled: !!userId,
+  });
+
+  const { data: page } = useQuery<PageWithComments>({
+    queryKey: ["page", pageId, userId],
+    queryFn: async () => {
+      const res = await fetch(`/api/page/${pageId}?userId=${userId}`);
+      return res.json();
+    },
+    enabled: !!userId,
+    initialData: pageData as PageWithComments,
+    staleTime: 60 * 1000,
   });
 
   const firstPage = pages
@@ -164,7 +170,10 @@ export default function PageClientView({
     setIsEmojiModalOpen(false);
   };
 
-  const handleRemoveCover = () => {};
+  const handleRemoveCover = () => {
+    updatePage({ cover_img: null });
+    setIsCoverModalOpen(false);
+  };
 
   const handleRemoveEmoji = () => {
     updatePage({ icon: null });
@@ -255,6 +264,7 @@ export default function PageClientView({
               <Image
                 src={`/assets/images/cover/${page.cover_img}`}
                 fill
+                sizes={"100vw"}
                 className="object-cover max-h-60"
                 alt={page.cover_alt ?? "Page cover"}
                 loading="eager"
@@ -294,9 +304,18 @@ export default function PageClientView({
               })}
               iconData={page?.icon ?? null}
               coverData={page?.cover_img ?? null}
+              isCommentInputShow={isCommentInputShow}
+              setIsCommentInputShow={setIsCommentInputShow}
             />
           </div>
           <PageHead pageId={pageId} title={pageData.title} />
+          <CommentArea
+            userId={userId}
+            pageId={pageId}
+            comments={page.comments}
+            isCommentInputShow={isCommentInputShow}
+            userName={userName}
+          />
         </div>
         <div className="page-layout__bottom col-[content-start/content-end]">
           {children}

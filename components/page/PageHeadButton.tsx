@@ -9,6 +9,7 @@ interface ButtonProps {
   iconData: string | null;
   coverData: string | null;
   buttonId: string;
+  onClick?: () => void;
 }
 export default function PageHeadButton({
   button,
@@ -17,9 +18,11 @@ export default function PageHeadButton({
   iconData,
   coverData,
   buttonId,
+  onClick,
 }: ButtonProps) {
   if (
     (buttonId === "emojiIcon" && !!iconData) ||
+    (buttonId === "coverIcon" && !!coverData) ||
     (buttonId === "coverIcon" && !!coverData)
   ) {
     return null;
@@ -31,6 +34,10 @@ export default function PageHeadButton({
       ref={innerRef}
       {...buttonProps}
       className="inline-flex cursor-pointer group/item"
+      onClick={(e) => {
+        buttonProps?.onClick?.(e);
+        onClick?.();
+      }}
     >
       <div className="inline-flex justify-center items-center px-2 gap-x-1.5 rounded-md text-[#a19e99] group-hover/item:bg-[#f0efed]">
         <span className="inline-flex justify-center items-center w-4 h-4">

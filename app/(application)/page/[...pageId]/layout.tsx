@@ -1,5 +1,7 @@
-import { notFound } from "next/navigation";
-import { getPageDetail } from "@/services/contentService";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+import { notFound, redirect } from "next/navigation";
+import { getPageData } from "@/services/pageService";
 import PageClientView from "@/components/page/PageClientView";
 
 interface PageLayoutProps {
@@ -11,13 +13,24 @@ export default async function PageLayout({
   children,
   params,
 }: PageLayoutProps) {
+  const session = await getServerSession(authOptions);
   const { pageId } = await params;
-  const pageData = await getPageDetail(pageId[0]);
+  const userId = session?.user?.id;
+  const userName = session?.user?.name;
+  const pageData = await getPageData(userId, pageId[0]);
 
+  if (!userId || !userName) {
+    redirect("/login");
+  }
   if (!pageData) notFound();
 
   return (
-    <PageClientView pageData={pageData} pageId={pageId[0]}>
+    <PageClientView
+      pageData={pageData}
+      pageId={pageId[0]}
+      userId={userId}
+      userName={userName}
+    >
       {children}
     </PageClientView>
   );
