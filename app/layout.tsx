@@ -6,6 +6,7 @@ import { type AuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import authOptions from "@/lib/authOptions";
 import SessionProviderWrapper from "@/components/base/SessionProviderWrapper";
+import SearchModal from "@/components/modal/SearchModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default async function RootLayout({
         <Providers>
           <SessionProviderWrapper session={session}>
             {children}
+            <SearchModal />
           </SessionProviderWrapper>
         </Providers>
       </body>

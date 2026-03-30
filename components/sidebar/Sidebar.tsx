@@ -4,11 +4,11 @@ import { getSidebarPages } from "@/services/pageService";
 import Link from "next/link";
 import SidebarProfile from "@/components/sidebar/SidebarProfile";
 import SidebarList from "@/components/sidebar/SidebarList";
-import SearchIcon from "@/components/icons/sidebar/SearchIcon";
+import SearchButton from "@/components/sidebar/SearchButton";
 import HomeIcon from "@/components/icons/sidebar/HomeIcon";
 
 const STATIC_NAV_ITME = [
-  { icon: <SearchIcon />, label: "검색", href: "/search" },
+  // { icon: <SearchIcon />, label: "검색", href: "/search" },
   { icon: <HomeIcon />, label: "홈", href: "/" },
 ];
 
@@ -32,6 +32,7 @@ export default async function Sidebar() {
           <div className="menu">
             <div className="menu__top p-2">
               <ul>
+                <SearchButton />
                 {STATIC_NAV_ITME.map((item) => (
                   <li key={item.label}>
                     <div className="menu-item__warpper">
