@@ -1,19 +1,14 @@
-import { notFound } from "next/navigation";
-import { getPageDetail } from "@/services/contentService";
+"use client";
+import { useState } from "react";
+import EditableBlock from "@/components/page/EditableBlock";
 
-export default async function Page({
-  params,
-}: {
-  params: { pageId: string[] };
-}) {
-  const { pageId } = await params;
-  const pageData = await getPageDetail(pageId[0]);
-
-  if (!pageData) notFound();
-
+export default function Page({ params }: { params: { pageId: string[] } }) {
+  const onAddBlock = (id: string, el: string) => {};
   return (
-    <>
-      <div>page</div>
-    </>
+    <div className="max-w-3xl mx-auto py-20 px-10">
+      <div className="page-contents flex flex-col gap-2">
+        <EditableBlock onAddBlock={onAddBlock} />
+      </div>
+    </div>
   );
 }
