@@ -66,7 +66,7 @@ export default function Menu({ pages, createPageAction }: MenuProps) {
       </div>
       <div
         style={{
-          height: `${isIdvPageOpen ? "auto" : 0}`,
+          height: `${isIdvPageOpen ? "" : 0}`,
           overflow: `${isIdvPageOpen ? "visible" : "hidden"}`,
         }}
         className="menu__body"

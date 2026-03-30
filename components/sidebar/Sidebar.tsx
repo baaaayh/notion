@@ -24,12 +24,12 @@ export default async function Sidebar() {
 
   return (
     <div className="side-bar h-full border-r border-[#d3d1cb]">
-      <div className="side-bar__wrapper h-full bg-[#f9f8f7]">
+      <div className="side-bar__wrapper flex flex-col h-full bg-[#f9f8f7]">
         <div className="side-bar__head px-2 py-1.5">
           <SidebarProfile name={name} />
         </div>
-        <div className="side-bar__body">
-          <div className="menu">
+        <div className="side-bar__body flex flex-col flex-1 min-h-0">
+          <div className="menu h-full flex flex-col">
             <div className="menu__top p-2">
               <ul>
                 <SearchButton />
@@ -52,7 +52,7 @@ export default async function Sidebar() {
                 ))}
               </ul>
             </div>
-            <div className="menu__bottom p-2">
+            <div className="menu__bottom p-2 flex-1 min-h-0 overflow-auto">
               <SidebarList userId={id} initialPages={initialPages} />
             </div>
           </div>

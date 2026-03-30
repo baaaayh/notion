@@ -81,11 +81,11 @@ function SearchModal() {
 
   return createPortal(
     <div
-      className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-1 shadow-[0px_24px_48px_0px_#1919193d,0px_4px_12px_0px_#19191924,0px_0px_0px_1px_#2a1c0012]"
+      className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-3 shadow-[0px_24px_48px_0px_#1919193d,0px_4px_12px_0px_#19191924,0px_0px_0px_1px_#2a1c0012]"
       onClick={closeSearch}
     >
       <div
-        className="search-modal inline-flex w-max bg-white rounded-2xl shadow-xl overflow-hidden"
+        className="search-modal inline-flex w-max bg-[#f1f0f0] rounded-2xl shadow-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="search-modal__wrapper flex flex-col">

@@ -199,7 +199,7 @@ export default function PageClientView({
   };
 
   return (
-    <div className="page-view h-full">
+    <div className="page-view">
       {isCoverModalOpen && (
         <CoverModal
           coverModalRef={(node: HTMLElement | null) =>

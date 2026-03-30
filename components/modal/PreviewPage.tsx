@@ -9,7 +9,7 @@ function PreviewPage({ page }: PreviewPageProps) {
   if (!page) return null;
   return (
     <div className="preview-page pt-20 pr-10 pb-0 pl-6">
-      <div className="rounded-md shadow-[0px_20px_24px_0px_#1919190d,0px_5px_8px_0px_#19191907,0px_0px_0px_1px_#2a1c0012] overflow-hidden">
+      <div className="rounded-xl shadow-[0px_20px_24px_0px_#1919190d,0px_5px_8px_0px_#19191907,0px_0px_0px_1px_#2a1c0012] overflow-hidden">
         <div className="preview-page__head">
           <div className="preview-page__cover relative h-20">
             <Image
